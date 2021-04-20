@@ -1,35 +1,53 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import utils.EMF_Creator;
+import dtos.RenameMeDTO;
+import entities.renameme.RenameMe;
+import entities.renameme.RenameMeRepository;
+import java.util.List;
+import javax.annotation.security.RolesAllowed;
+import javax.ws.rs.core.Response;
+import rest.provider.Provider;
 import facades.FacadeExample;
-import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 //Todo Remove or change relevant parts before ACTUAL use
 @Path("xxx")
-public class RenameMeResource {
+public class RenameMeResource extends Provider {
 
-    private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
-       
-    private static final FacadeExample FACADE =  FacadeExample.getFacadeExample(EMF);
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-            
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String demo() {
-        return "{\"msg\":\"Hello World\"}";
+    private static final RenameMeRepository REPO =  FacadeExample.getFacadeExample(EMF);
+
+    @Override
+    public Response getById(int id) {
+        RenameMeDTO renameMeDTO = REPO.getById(id);
+        return Response.ok(GSON.toJson(renameMeDTO)).build();
     }
-    @Path("count")
-    @GET
-    @Produces({MediaType.APPLICATION_JSON})
-    public String getRenameMeCount() {
-        long count = FACADE.getRenameMeCount();
-        //System.out.println("--------------->"+count);
-        return "{\"count\":"+count+"}";  //Done manually so no need for a DTO
+
+    @Override
+    public Response getAll() {
+        List<RenameMeDTO> renameMeDTOS = REPO.getAll();
+        return Response.ok(GSON.toJson(renameMeDTOS)).build();
+    }
+
+    @Override
+    @RolesAllowed("admin")
+    public Response create(String jsonBody) {
+        RenameMeDTO renameMeDTO = GSON.fromJson(jsonBody, RenameMeDTO.class);
+        RenameMeDTO createdRenameMe = REPO.createRenameMe(renameMeDTO);
+        return Response.ok(createdRenameMe).build();
+    }
+
+    @Override
+    @RolesAllowed("admin")
+    public Response update(int id, String jsonBody) {
+        //TODO (tz): implement this!
+        throw new UnsupportedOperationException("Not yet implemented!");
+    }
+
+    @Override
+    @RolesAllowed("admin")
+    public Response delete(int id) {
+        //TODO (tz): implement this!
+        throw new UnsupportedOperationException("Not yet implemented!");
     }
 }
