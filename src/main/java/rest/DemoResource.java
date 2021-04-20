@@ -1,7 +1,15 @@
 package rest;
 
 import com.google.gson.Gson;
+import dtos.Example.AnimeDTO;
+import dtos.Example.CatDTO;
+import dtos.Example.ChuckDTO;
+import dtos.Example.CombinedDTO;
+import dtos.Example.JokeDTO;
+import dtos.Example.WeatherDTO;
+import dtos.RenameMeDTO;
 import entities.User;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
@@ -15,13 +23,15 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
 import utils.EMF_Creator;
+import utils.HttpUtil;
 
 /**
  * @author lam@cphbusiness.dk
  */
 @Path("info")
 public class DemoResource {
-    
+
+    Gson gson = new Gson();
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     @Context
     private UriInfo context;
@@ -43,7 +53,7 @@ public class DemoResource {
 
         EntityManager em = EMF.createEntityManager();
         try {
-            TypedQuery<User> query = em.createQuery ("select u from User u",entities.User.class);
+            TypedQuery<User> query = em.createQuery("select u from User u", entities.User.class);
             List<User> users = query.getResultList();
             return "[" + users.size() + "]";
         } finally {
@@ -68,4 +78,53 @@ public class DemoResource {
         String thisuser = securityContext.getUserPrincipal().getName();
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("fetchdata")
+
+    public String getFetchData() {
+        RenameMeDTO dto = null;
+        try {
+            String JsonResponse = HttpUtil.fetchData("www.google.com");
+            dto = gson.fromJson(JsonResponse, RenameMeDTO.class);
+        } catch (Exception e) {
+        }
+        return gson.toJson(dto);
+
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("fetchMany")
+    public String getFetchMany() {
+        String[] str = {
+            "https://animechan.vercel.app/api/random",
+            "https://api.chucknorris.io/jokes/random",
+            "https://aws.random.cat/meow",
+            "https://icanhazdadjoke.com/",
+            "https://goweather.herokuapp.com/weather/lyngby"
+        };
+
+        AnimeDTO animeDTO = null;
+        ChuckDTO chuckDTO = null;
+        CatDTO catDTO = null;
+        JokeDTO jokeDTO = null;
+        WeatherDTO weatherDTO = null;
+     
+        try {
+            List<String> JsonResponse = HttpUtil.fetchMany(str);
+            animeDTO = gson.fromJson(JsonResponse.get(0), AnimeDTO.class);
+            chuckDTO = gson.fromJson(JsonResponse.get(1), ChuckDTO.class);
+            catDTO = gson.fromJson(JsonResponse.get(2), CatDTO.class);
+            jokeDTO = gson.fromJson(JsonResponse.get(3), JokeDTO.class);
+            weatherDTO = gson.fromJson(JsonResponse.get(4), WeatherDTO.class);
+        } catch (Exception e) {
+        }
+        
+        CombinedDTO combinedDTO = new CombinedDTO(animeDTO, weatherDTO, chuckDTO, catDTO, jokeDTO);
+        return gson.toJson(combinedDTO);
+
+    }
+
 }
