@@ -5,7 +5,7 @@
  */
 package dtos;
 
-import entities.RenameMe;
+import entities.renameme.RenameMe;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * @author tha
  */
 public class RenameMeDTO {
-    private long id;
+    private Integer id;
     private String str1;
     private String str2;
 
@@ -34,6 +34,14 @@ public class RenameMeDTO {
         this.id = rm.getId();
         this.str1 = rm.getDummyStr1();
         this.str2 = rm.getDummyStr2();
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getDummyStr1() {

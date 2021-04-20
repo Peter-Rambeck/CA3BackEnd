@@ -1,4 +1,4 @@
-package errorhandling;
+package utils.errorhandling;
 public class API_Exception extends Exception {
     int errorCode;
 

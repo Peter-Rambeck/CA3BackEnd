@@ -1,12 +1,19 @@
 package facades;
 
+import dtos.RenameMeDTO;
+import entities.renameme.RenameMeRepository;
+import java.util.ArrayList;
+import java.util.List;
 import utils.EMF_Creator;
-import entities.RenameMe;
+import entities.renameme.RenameMe;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +23,8 @@ import org.junit.jupiter.api.Test;
 public class FacadeExampleTest {
 
     private static EntityManagerFactory emf;
-    private static FacadeExample facade;
+    private static RenameMeRepository facade;
+    public static RenameMe renameMe1, renameMe2;
 
     public FacadeExampleTest() {
     }
@@ -37,12 +45,13 @@ public class FacadeExampleTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
+        renameMe1 = new RenameMe("Some txt", "More text");
+        renameMe2 = new RenameMe("aaa", "bbb");
         try {
             em.getTransaction().begin();
             em.createNamedQuery("RenameMe.deleteAllRows").executeUpdate();
-            em.persist(new RenameMe("Some txt", "More text"));
-            em.persist(new RenameMe("aaa", "bbb"));
-
+            em.persist(renameMe1);
+            em.persist(renameMe2);
             em.getTransaction().commit();
         } finally {
             em.close();
@@ -54,10 +63,28 @@ public class FacadeExampleTest {
 //        Remove any data after each test was run
     }
 
-    // TODO: Delete or change this method 
     @Test
-    public void testAFacadeMethod() {
-        assertEquals(2, facade.getRenameMeCount(), "Expects two rows in the database");
+    void getById() {
+        int expected = renameMe1.getId();
+        RenameMeDTO actual = facade.getById(expected);
+        assertEquals(expected, actual.getId());
     }
 
+    @Test
+    void getAll() {
+        List<RenameMeDTO> expected = new ArrayList<>();
+        expected.add(new RenameMeDTO(renameMe1));
+        expected.add(new RenameMeDTO(renameMe2));
+
+        List<RenameMeDTO> actual = facade.getAll();
+        assertEquals(expected.size(), actual.size());
+    }
+
+    @Test
+    void createRenameMe() {
+        RenameMeDTO expected = new RenameMeDTO("create", "me");
+        RenameMeDTO actual = facade.createRenameMe(expected);
+        assertEquals(expected.getDummyStr1(), actual.getDummyStr1());
+        assertNotNull(actual.getId());
+    }
 }

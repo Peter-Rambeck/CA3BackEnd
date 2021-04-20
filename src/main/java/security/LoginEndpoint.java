@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import entities.User;
-import errorhandling.API_Exception;
+import utils.errorhandling.API_Exception;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -24,7 +24,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import security.errorhandling.AuthenticationException;
-import errorhandling.GenericExceptionMapper;
+import utils.errorhandling.GenericExceptionMapper;
 import javax.persistence.EntityManagerFactory;
 import utils.EMF_Creator;
 
