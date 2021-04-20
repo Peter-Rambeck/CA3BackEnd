@@ -29,7 +29,7 @@ public class User implements Serializable {
   @NotNull
   @Size(min = 1, max = 255)
   @Column(name = "user_pass")
-  private String userPass;
+  private String hashPassword;
   @JoinTable(name = "user_roles", joinColumns = {
     @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
@@ -51,13 +51,13 @@ public class User implements Serializable {
 
   //TODO Change when password is hashed
    public boolean verifyPassword(String pw){
-        return(pw.equals(userPass));
+       return BCrypt.checkpw(pw, hashPassword);
     }
 
   public User(String userName, String userPass) {
     this.userName = userName;
 
-    this.userPass = userPass;
+    this.hashPassword = BCrypt.hashpw(userPass, BCrypt.gensalt());
   }
 
 
@@ -70,11 +70,11 @@ public class User implements Serializable {
   }
 
   public String getUserPass() {
-    return this.userPass;
+    return this.hashPassword;
   }
 
   public void setUserPass(String userPass) {
-    this.userPass = userPass;
+    this.hashPassword = BCrypt.hashpw(userPass, BCrypt.gensalt());
   }
 
   public List<Role> getRoleList() {
