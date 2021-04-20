@@ -1,7 +1,9 @@
 package rest;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import dtos.Example.AnimeDTO;
+import dtos.Example.BeerDTO;
 import dtos.Example.CatDTO;
 import dtos.Example.ChuckDTO;
 import dtos.Example.CombinedDTO;
@@ -9,6 +11,7 @@ import dtos.Example.JokeDTO;
 import dtos.Example.WeatherDTO;
 import dtos.RenameMeDTO;
 import entities.User;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.security.RolesAllowed;
@@ -103,7 +106,8 @@ public class DemoResource {
             "https://api.chucknorris.io/jokes/random",
             "https://aws.random.cat/meow",
             "https://icanhazdadjoke.com/",
-            "https://goweather.herokuapp.com/weather/lyngby"
+            "https://goweather.herokuapp.com/weather/lyngby",
+            "https://api.punkapi.com/v2/beers/random"
         };
 
         AnimeDTO animeDTO = null;
@@ -111,7 +115,9 @@ public class DemoResource {
         CatDTO catDTO = null;
         JokeDTO jokeDTO = null;
         WeatherDTO weatherDTO = null;
-     
+        //Create DTO for later use
+        List<BeerDTO> beerDTOS = new ArrayList<>();
+
         try {
             List<String> JsonResponse = HttpUtil.fetchMany(str);
             animeDTO = gson.fromJson(JsonResponse.get(0), AnimeDTO.class);
@@ -119,10 +125,17 @@ public class DemoResource {
             catDTO = gson.fromJson(JsonResponse.get(2), CatDTO.class);
             jokeDTO = gson.fromJson(JsonResponse.get(3), JokeDTO.class);
             weatherDTO = gson.fromJson(JsonResponse.get(4), WeatherDTO.class);
+
+            // Setup type that GSON can accept (List<BeerDTO> inside the TypeToken)
+            Type type = new TypeToken<List<BeerDTO>>() {
+            }.getType();
+
+            // use that type to generate list
+            beerDTOS = gson.fromJson(JsonResponse.get(5), type);
         } catch (Exception e) {
         }
         
-        CombinedDTO combinedDTO = new CombinedDTO(animeDTO, weatherDTO, chuckDTO, catDTO, jokeDTO);
+        CombinedDTO combinedDTO = new CombinedDTO(animeDTO, weatherDTO, chuckDTO, catDTO, jokeDTO, beerDTOS);
         return gson.toJson(combinedDTO);
 
     }
