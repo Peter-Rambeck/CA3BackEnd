@@ -30,7 +30,6 @@ public class RenameMeResource extends Provider {
     }
 
     @Override
-    @RolesAllowed("admin")
     public Response create(String jsonBody) {
         RenameMeDTO renameMeDTO = GSON.fromJson(jsonBody, RenameMeDTO.class);
         RenameMeDTO createdRenameMe = REPO.createRenameMe(renameMeDTO);

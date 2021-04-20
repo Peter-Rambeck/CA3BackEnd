@@ -8,6 +8,7 @@ package dtos;
 import entities.renameme.RenameMe;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -64,5 +65,22 @@ public class RenameMeDTO {
     public String toString() {
         return "RenameMeDTO{" + "id=" + id + ", str1=" + str1 + ", str2=" + str2 + '}';
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof RenameMeDTO)) {
+            return false;
+        }
+        RenameMeDTO that = (RenameMeDTO) o;
+        return Objects.equals(getId(), that.getId()) && Objects.equals(str1, that.str1)
+            && Objects.equals(str2, that.str2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), str1, str2);
+    }
 }

@@ -1,6 +1,11 @@
 package rest;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import dtos.RenameMeDTO;
 import entities.renameme.RenameMe;
+import io.restassured.http.ContentType;
+import java.util.List;
 import utils.EMF_Creator;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
@@ -13,6 +18,9 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+
+import static org.hamcrest.CoreMatchers.hasItems;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -26,6 +34,7 @@ public class RenameMeResourceTest {
     private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static RenameMe r1, r2;
+    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
     private static HttpServer httpServer;
@@ -83,22 +92,41 @@ public class RenameMeResourceTest {
 
     //This test assumes the database contains two rows
     @Test
-    public void testDummyMsg() throws Exception {
+    public void testGetById() throws Exception {
         given()
                 .contentType("application/json")
-                .get("/xxx/").then()
+                .pathParam("id", r1.getId())
+                .get("/xxx/{id}").then()
                 .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("msg", equalTo("Hello World"));
+                .statusCode(HttpStatus.OK_200.getStatusCode());
     }
 
     @Test
-    public void testCount() throws Exception {
-        given()
-                .contentType("application/json")
-                .get("/xxx/count").then()
-                .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("count", equalTo(2));
+    public void testGetAll() throws Exception {
+        List<RenameMeDTO> foundRenameMes;
+
+        foundRenameMes = given()
+            .contentType(ContentType.JSON)
+            .get("/xxx/").then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode())
+            .extract().body().jsonPath().getList("", RenameMeDTO.class);
+
+        assertThat(foundRenameMes, hasItems(
+            new RenameMeDTO(r1),
+            new RenameMeDTO(r2)
+        ));
     }
+
+    @Test
+    public void testCreateRenameMe() throws Exception {
+        RenameMeDTO requestBody = new RenameMeDTO("create", "me");
+        given()
+            .contentType(ContentType.JSON)
+            .body(requestBody)
+            .when()
+            .post("xxx")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.OK_200.getStatusCode());    }
 }
