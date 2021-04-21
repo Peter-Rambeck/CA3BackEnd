@@ -82,10 +82,10 @@ public class DemoResource {
         return "{\"msg\": \"Hello to (admin) User: " + thisuser + "\"}";
     }
 
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("fetchdata")
-
     public String getFetchData() {
         RenameMeDTO dto = null;
         try {

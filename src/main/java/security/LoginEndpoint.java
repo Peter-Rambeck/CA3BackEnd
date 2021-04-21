@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import entities.User;
+import javax.ws.rs.GET;
+import javax.ws.rs.WebApplicationException;
+import utils.SetupTestUsers;
 import utils.errorhandling.API_Exception;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -34,6 +37,17 @@ public class LoginEndpoint {
     public static final int TOKEN_EXPIRE_TIME = 1000 * 60 * 30; //30 min
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/generate")
+    public String generateUsers() {
+       boolean isGenerated = SetupTestUsers.generateUsers();
+       if (!isGenerated) {
+           throw new WebApplicationException("Failed generation", 500);
+       }
+       return "{\"msg\": \"Yay it worked\"}";
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
