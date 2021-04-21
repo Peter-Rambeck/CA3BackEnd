@@ -6,6 +6,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import utils.EMF_Creator;
 
 @Produces(MediaType.APPLICATION_JSON)

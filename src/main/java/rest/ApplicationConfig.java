@@ -20,7 +20,8 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(utils.cors.CorsFilter.class);
+        resources.add(utils.cors.CorsRequestFilter.class);
+        resources.add(utils.cors.CorsResponseFilter.class);
         resources.add(utils.errorhandling.API_ExceptionMapper.class);
         resources.add(utils.errorhandling.GenericExceptionMapper.class);
         resources.add(org.glassfish.jersey.server.wadl.internal.WadlResource.class);
