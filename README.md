@@ -26,7 +26,7 @@
     
 5. Create the new database on your droplet
 6. Change REMOTE_USER & REMOTE_PW in Travis for Tomcat deploy.
-7. In SetupTestUsers. Change user & admin credentials to generete users in a startup database.   
+7. In SetupTestUsers. Change user & admin credentials to generate users in a startup database.   
 
 ## Usage:
 In HttpUtil are two methods designed to easily 'Fetch' from different external servers.
