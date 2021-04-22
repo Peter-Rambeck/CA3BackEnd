@@ -1,16 +1,40 @@
-[![Build Status](https://travis-ci.org/dat3startcode/rest-jpa-devops-startcode.svg?branch=master)](https://travis-ci.org/dat3startcode/rest-jpa-devops-startcode)
+[![Build Status](https://travis-ci.com/Peter-Rambeck/CA3BackEnd.svg?branch=master)](https://travis-ci.com/Peter-Rambeck/CA3BackEnd)
 
-*This project is meant as start code for projects and exercises given in Flow-1+2 at http://cphbusiness.dk in the Study Program "AP degree in Computer Science"*
+# InSession startcode
 
-*Projects which are expected to use this start-code are projects that require all, or most of the following technologies:*
- - *JPA and REST*
-- *Testing, including database test*
-- *Testing, including tests of REST-API's*
-- *CI and CONTINUOUS DELIVERY*
+## Team
+**Peter R Andersen**
+* [Github](https://github.com/Peter-Rambeck)
 
-### Preconditions
-*In order to use this code, you should have a local developer setup + a "matching" droplet on Digital Ocean as described in the 3. semester guidelines* 
-# Getting Started
+**Jens Gelbek**
+* [Github](https://github.com/jensgelbek)
 
-This document explains how to use this code (build, test and deploy), locally with maven, and remotely with maven controlled by Travis
- - [How to use](https://docs.google.com/document/d/1K6s6Tt65bzB8bCSE_NUE8alJrLRNTKCwax3GEm4OjOE/edit?usp=sharing)
+**Rasmus Ditlev Hansen**
+* [Github](https://github.com/RasmusDH)
+
+**Tobias Zimmermann**
+* [Github](https://github.com/tobias-z)
+
+## Getting started
+1. Change the `remote.server` to your domain in the pom.xml
+2. Change env variable `connection_str` in the EMF_Creator
+3. Insert that new env variable on your droplets docker-compose.yml file together with a new database name
+4. Run these commands:
+    - docker-compose down
+    - docker-compose build
+    - docker-compose up -d
+    
+5. Create the new database on your droplet
+6. Change REMOTE_USER & REMOTE_PW in Travis for Tomcat deploy.
+7. In SetupTestUsers. Change user & admin credentials to generete users in a startup database.   
+
+## Usage:
+In HttpUtil are two methods designed to easily 'Fetch' from different external servers.
+1. Method: fetchData, Fetch data from one link/endpoint.
+2. Method: fetchMany, Fetch data from many links/endpoints.
+
+Rest: Roles allowed annotations: Change the annotations if you want to make an endpoint accessible for different user-roles.  
+
+
+### Travis
+In the .travis.yml there is a section `only` under branches, this is where you can decide which branches should be build on push.
