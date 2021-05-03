@@ -29,42 +29,18 @@ import org.junit.jupiter.api.Test;
 //Uncomment the line below, to temporarily disable this test
 //@Disabled
 
-public class RenameMeResourceTest {
+public class RenameMeResourceTest extends SetupRestTests {
 
-    private static final int SERVER_PORT = 7777;
-    private static final String SERVER_URL = "http://localhost/api";
     private static RenameMe r1, r2;
-    private static Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-
-    static final URI BASE_URI = UriBuilder.fromUri(SERVER_URL).port(SERVER_PORT).build();
-    private static HttpServer httpServer;
-    private static EntityManagerFactory emf;
-
-    static HttpServer startServer() {
-        ResourceConfig rc = ResourceConfig.forApplication(new ApplicationConfig());
-        return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
-    }
 
     @BeforeAll
     public static void setUpClass() {
-        //This method must be called before you request the EntityManagerFactory
-        EMF_Creator.startREST_TestWithDB();
-        emf = EMF_Creator.createEntityManagerFactoryForTest();
-
-        httpServer = startServer();
-        //Setup RestAssured
-        RestAssured.baseURI = SERVER_URL;
-        RestAssured.port = SERVER_PORT;
-        RestAssured.defaultParser = Parser.JSON;
+        setupServer();
     }
 
     @AfterAll
     public static void closeTestServer() {
-        //System.in.read();
-
-        //Don't forget this, if you called its counterpart in @BeforeAll
-        EMF_Creator.endREST_TestWithDB();
-        httpServer.shutdownNow();
+        shutdownServer();
     }
 
     // Setup the DataBase (used by the test-server and this test) in a known state BEFORE EACH TEST
